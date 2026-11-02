@@ -1,0 +1,23 @@
+load("@gazelle//:def.bzl", "gazelle")
+load("@rules_go//go:def.bzl", "go_binary", "go_library")
+
+# gazelle:prefix auth-service
+gazelle(name = "gazelle")
+
+go_binary(
+    name = "app",
+    data = [".env"],
+    embed = [":go-project_lib"],
+    visibility = ["//visibility:public"],
+)
+
+go_library(
+    name = "go-project_lib",
+    srcs = ["main.go"],
+    importpath = "auth-service",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//app",
+        "//config",
+    ],
+)

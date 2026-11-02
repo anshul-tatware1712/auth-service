@@ -1,0 +1,15 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "router",
+    srcs = [
+        "router.go",
+        "user-router.go",
+    ],
+    importpath = "auth-service/router",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//controller",
+        "@com_github_go_chi_chi_v5//:chi",
+    ],
+)

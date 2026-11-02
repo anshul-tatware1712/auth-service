@@ -1,0 +1,15 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "app",
+    srcs = ["application.go"],
+    importpath = "auth-service/app",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//config",
+        "//controller",
+        "//db/repository",
+        "//router",
+        "//services",
+    ],
+)
