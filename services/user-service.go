@@ -8,18 +8,17 @@ import (
 type UserService interface {
 	CreateUser() error
 }
-type UserServiceImpl struct{
+type UserService1 struct{
 	UserRepository db.UserRepository
 }
 
-func (s *UserServiceImpl) CreateUser() error {
+func (s *UserService1) CreateUser() error {
 	fmt.Println("creating user")
 	s.UserRepository.CreateUser()
 	return nil
-
 }
 
 func NewUserService(_userRepo db.UserRepository) UserService {
-	return &UserServiceImpl{UserRepository: _userRepo}
+	return &UserService1{UserRepository: _userRepo}
 }
 

@@ -8,6 +8,7 @@ import (
 type UserController struct{
 	UserService services.UserService
 }
+
 func NewUserController(us services.UserService) *UserController {	
 	return &UserController{UserService: us}
 }

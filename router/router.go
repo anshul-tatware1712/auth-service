@@ -9,10 +9,8 @@ type Router interface {
 	Register(r chi.Router)
 }
 
-func SetupRouter(userRouter Router) *chi.Mux {
-
+func SetupRouter(router Router) *chi.Mux {
 	chirouter := chi.NewRouter()
- 
-    userRouter.Register(chirouter)
+    router.Register(chirouter)
 	return chirouter
 }

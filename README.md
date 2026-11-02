@@ -30,6 +30,78 @@ Go service built with Bazel. Run all commands from this project directory.
 The service listens at http://localhost:8080. Stop it with Ctrl+C.
 `bazel run` builds the target before starting it; a separate build is optional.
 
+## How the Application Works
+
+`main.go` loads `.env`, reads `PORT` into the application configuration, creates
+the application, and starts its HTTP server. The server uses `chi` and registers
+the user route:
+
+```text
+POST /user
+   -> UserRouter.Register
+   -> UserController.RegisterUser
+   -> UserService.CreateUser
+   -> UserRepository.CreateUser
+```
+
+At the moment, creating a user does not write to a database. The repository and
+service print messages, and the controller returns `user created`. The handler
+does not yet decode or validate a request body.
+
+## Dependency Injection
+
+Dependencies are assembled manually in `Application.Run`; there is no DI
+framework. Constructors receive the dependency they need, which keeps the
+controller independent of the concrete repository implementation:
+
+```text
+UserRepoImpl -> UserServiceImpl -> UserController -> UserRouter -> HTTP server
+```
+
+`NewUserService` accepts the `UserRepository` interface. `NewUserController`
+accepts the `UserService` interface. This is constructor injection: the app
+creates the concrete objects at startup and passes them to the layer that uses
+them. The application setup is the composition root, the place where concrete
+implementations are selected and wired together.
+
+There is also a `Storage` type whose `NewStorage` constructor creates a
+`UserRepository`. However, `NewApplication` stores this value and `Run` does not
+use it; `Run` separately calls `NewUserRepo`. As a result, `Storage` is not
+currently part of the active dependency-injection chain. A consistent next step
+is to create storage once in the composition root, then inject
+`Storage.UserRepository` into `NewUserService`. When adding a real database,
+create and configure the database connection there too, and pass it to the
+repository implementation instead of opening connections inside handlers.
+
+## Code Quality and Next Steps
+
+The overall direction is good for a small service: HTTP handling, business
+logic, and data access have separate packages; the service depends on a
+repository interface; and dependencies are passed explicitly. This makes the
+code easier to replace and test than code that constructs database clients
+inside request handlers.
+
+The implementation is still a starting point, not production-ready:
+
+- `CreateUser` errors are discarded by both the service and controller. The
+   service always returns `nil`, and the handler responds as though the request
+   succeeded. Propagate errors and return an appropriate HTTP status.
+- `NewStorage` is currently unused by the request path, so there are two
+   different ways to create a user repository. Wire one shared storage instance
+   through the application.
+- `UserRepoImpl.CreateUser` does not persist data yet. Add request/domain data
+   and a real database operation before treating this as user registration.
+- `config.Load` and `GetString` panic on errors or missing values. Validate
+   configuration during startup and return errors so startup failures are clear.
+- Add tests around service behavior and controller HTTP responses. The service
+   interface makes it straightforward to inject a small fake repository in
+   tests.
+
+So, the architecture is a reasonable foundation, and the explicit DI approach
+fits this project. The main improvements are to make the existing wiring
+consistent and complete the error, persistence, and test paths before relying
+on it as an authentication service.
+
 ## Everyday Commands
 
 Build without starting the service:

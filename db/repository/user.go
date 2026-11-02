@@ -5,18 +5,18 @@ import (
 )
 
 type UserRepository interface{
-	CreateUser() error
+  	CreateUser() error
 }
 
-type UserRepoImpl struct{
+type UserRepo1 struct{
 //   db *sql.DB
 }
 
 func NewUserRepo() UserRepository {
-	return &UserRepoImpl{}
+	return &UserRepo1{}
 }
 
-func (r *UserRepoImpl) CreateUser() error {
+func (r *UserRepo1) CreateUser() error {
 	fmt.Println("creating user from repo")
 	return nil
 }
