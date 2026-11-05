@@ -2,8 +2,9 @@ package app
 
 import (
 	"auth-service/config"
+	db "auth-service/config/db"
 	"auth-service/controller"
-	db "auth-service/db/repository"
+	repo "auth-service/db/repository"
 	"auth-service/router"
 	"auth-service/services"
 	"fmt"
@@ -13,7 +14,7 @@ import (
 
 type Application struct {
 	Config Config
-	Store db.Storage
+	Store repo.Storage
 }
 
 type Config struct {
@@ -29,13 +30,13 @@ func NewConfig() *Config {
 }
 
 func NewApplication(cfg Config) *Application {
-	return &Application{Config: cfg,Store: *db.NewStorage()}
+	return &Application{Config: cfg,Store: *repo.NewStorage()}
 }
 
 func (app *Application) Run() error {
 
-
-	ur := db.NewUserRepo()
+	db, _ := db.CreateDB()
+	ur := repo.NewUserRepo(db)
 	us:=services.NewUserService(ur)
 	uc := controller.NewUserController(us)
 	_ur:=router.NewUserRouter(uc)

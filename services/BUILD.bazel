@@ -5,5 +5,10 @@ go_library(
     srcs = ["user-service.go"],
     importpath = "auth-service/services",
     visibility = ["//visibility:public"],
-    deps = ["//db/repository"],
+    deps = [
+        "//db/models",
+        "//db/repository",
+        "//utils",
+        "@com_github_golang_jwt_jwt_v5//:jwt",
+    ],
 )

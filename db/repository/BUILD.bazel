@@ -8,4 +8,5 @@ go_library(
     ],
     importpath = "auth-service/db/repository",
     visibility = ["//visibility:public"],
+    deps = ["//db/models"],
 )
