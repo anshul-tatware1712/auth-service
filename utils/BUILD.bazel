@@ -2,8 +2,14 @@ load("@rules_go//go:def.bzl", "go_library")
 
 go_library(
     name = "utils",
-    srcs = ["auth-utils.go"],
+    srcs = [
+        "auth-utils.go",
+        "json.go",
+    ],
     importpath = "auth-service/utils",
     visibility = ["//visibility:public"],
-    deps = ["@org_golang_x_crypto//bcrypt"],
+    deps = [
+        "@com_github_go_playground_validator_v10//:validator",
+        "@org_golang_x_crypto//bcrypt",
+    ],
 )

@@ -1,0 +1,8 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "dto",
+    srcs = ["auth.go"],
+    importpath = "auth-service/dto",
+    visibility = ["//visibility:public"],
+)

@@ -10,6 +10,7 @@ type Router interface {
 }
 
 func SetupRouter(router Router) *chi.Mux {
+	
 	chirouter := chi.NewRouter()
     router.Register(chirouter)
 	return chirouter

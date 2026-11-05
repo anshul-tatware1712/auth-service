@@ -5,5 +5,9 @@ go_library(
     srcs = ["user.go"],
     importpath = "auth-service/controller",
     visibility = ["//visibility:public"],
-    deps = ["//services"],
+    deps = [
+        "//dto",
+        "//services",
+        "//utils",
+    ],
 )
